@@ -1,6 +1,6 @@
-# @metalsmith/htmlmin
+# @metalsmith/minify
 
-A metalsmith plugin to minify html using [htmlnano](https://github.com/maltsev/htmlnano)
+A metalsmith plugin to minify HTML,CSS,JSON, and SVG using [html-minifier-next](https://github.com/j9t/html-minifier-next), [lightningcss](https://github.com/parcel-bundler/lightningcss) and [svgo](https://github.com/svg/svgo)
 
 [![metalsmith: core plugin][metalsmith-badge]][metalsmith-url]
 [![npm: version][npm-badge]][npm-url]
@@ -8,36 +8,55 @@ A metalsmith plugin to minify html using [htmlnano](https://github.com/maltsev/h
 [![code coverage][codecov-badge]][codecov-url]
 [![license: MIT][license-badge]][license-url]
 
-## Features
-
-An optional features section (if there are many), or an extended description of the core plugin
-
 ## Installation
 
 NPM:
 
 ```
-npm install @metalsmith/htmlmin
+npm install @metalsmith/minify
 ```
 
 Yarn:
 
 ```
-yarn add @metalsmith/htmlmin
+yarn add @metalsmith/minify
 ```
 
 ## Usage
 
-Pass `@metalsmith/htmlmin` to `metalsmith.use` :
+Pass `@metalsmith/minify` to `metalsmith.use` :
 
 ```js
-import htmlmin from '@metalsmith/htmlmin'
+import minify from '@metalsmith/minify'
+const isDev = process.env.NODE_ENV === 'development'
 
-metalsmith.use(htmlmin()) // defaults
-metalsmith.use(htmlmin({  // explicit defaults
-  ...
-}))
+metalsmith.use(minify()) // defaults
+metalsmith.use(
+  minify({
+    // explicit defaults
+    html: {
+      ...minify.htmlPresets.comprehensive,
+      pattern: '**/*.html',
+      conservativeCollapse: false,
+      minifyJS: false,
+      continueOnMinifyError: false,
+      continueOnParseError: false
+      // log is set to @metalsmith/minify:info by default
+    },
+    css: {
+      pattern: '**/*.css',
+      minify: !isDev,
+      sourceMap: isDev
+    },
+    json: false,
+    svg: {
+      pattern: '**/*.svg'
+    }
+  })
+)
 ```
+
+@metalsmith/minify minifies HTML only by ef
 
 ### Options
 
@@ -53,43 +72,39 @@ Document a second specific usage example, the title can be "Achieve x by doing y
 
 ### Debug
 
-To enable debug logs, set the `DEBUG` environment variable to `@metalsmith/~core_plugin~*`:
+To enable debug logs, set the `DEBUG` environment variable to `@metalsmith/minify*`:
 
 ```js
-metalsmith.env('DEBUG', '@metalsmith/~core_plugin~*')
+metalsmith.env('DEBUG', '@metalsmith/minify*')
 ```
 
 Alternatively you can set `DEBUG` to `@metalsmith/*` to debug all Metalsmith core plugins.
 
 ### CLI usage
 
-To use this plugin with the Metalsmith CLI, add `@metalsmith/htmlmin` to the `plugins` key in your `metalsmith.json` file:
+To use this plugin with the Metalsmith CLI, add `@metalsmith/minify` to the `plugins` key in your `metalsmith.json` file:
 
 ```json
 {
   "plugins": [
     {
-      "@metalsmith/htmlmin": {}
+      "@metalsmith/minify": {}
     }
   ]
 }
 ```
 
-## Credits (optional)
-
-Special thanks to ... for ...
-
 ## License
 
 [MIT](LICENSE)
 
-[npm-badge]: https://img.shields.io/npm/v/@metalsmith/htmlmin.svg
-[npm-url]: https://www.npmjs.com/package/@metalsmith/htmlmin
-[ci-badge]: https://github.com/metalsmith/htmlmin/actions/workflows/test.yml/badge.svg
-[ci-url]: https://github.com/metalsmith/htmlmin/actions/workflows/test.yml
+[npm-badge]: https://img.shields.io/npm/v/@metalsmith/minify.svg
+[npm-url]: https://www.npmjs.com/package/@metalsmith/minify
+[ci-badge]: https://github.com/metalsmith/minify/actions/workflows/test.yml/badge.svg
+[ci-url]: https://github.com/metalsmith/minify/actions/workflows/test.yml
 [metalsmith-badge]: https://img.shields.io/badge/metalsmith-core_plugin-green.svg?longCache=true
 [metalsmith-url]: https://metalsmith.io
-[codecov-badge]: https://img.shields.io/coveralls/github/metalsmith/htmlmin
-[codecov-url]: https://coveralls.io/github/metalsmith/htmlmin
-[license-badge]: https://img.shields.io/github/license/metalsmith/htmlmin
+[codecov-badge]: https://img.shields.io/coveralls/github/metalsmith/minify
+[codecov-url]: https://coveralls.io/github/metalsmith/minify
+[license-badge]: https://img.shields.io/github/license/metalsmith/minify
 [license-url]: LICENSE

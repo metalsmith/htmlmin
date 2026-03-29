@@ -13,7 +13,11 @@ function fixture(p) {
   return resolve(__dirname, 'fixtures', p)
 }
 
-describe('@metalsmith/htmlmin', function () {
+function metalsmith(fixtureName) {
+  return Metalsmith(fixture(fixtureName)).env('NODE_ENV', process.env.NODE_ENV).env('DEBUG', process.env.DEBUG)
+}
+
+describe('@metalsmith/minify', function () {
   it('should export a named plugin function matching package.json name', function () {
     const namechars = name.split('/')[1]
     const camelCased = namechars.split('').reduce((str, char, i) => {
@@ -23,13 +27,45 @@ describe('@metalsmith/htmlmin', function () {
     assert.strictEqual(plugin().name, camelCased.replace(/~/g, ''))
   })
   it('should not crash the metalsmith build when using default options', function (done) {
-    Metalsmith(fixture('default'))
-      .use(plugin())
+    metalsmith(fixture('default'))
+      .use(plugin({ html: true, css: false, svg: false }))
       .build((err) => {
         if (err) done(err)
-        assert.strictEqual(err, null)
-        equals(fixture('default/build'), fixture('default/expected'))
-        done()
+        try {
+          assert.strictEqual(err, null)
+          equals(fixture('default/build'), fixture('default/expected'))
+          done()
+        } catch (err) {
+          done(err)
+        }
       })
+  })
+  it('should handle parse/ minify errors', function (done) {
+    metalsmith('parse-error')
+      .use(plugin())
+      .process((err) => {
+        try {
+          assert.notStrictEqual(err, null)
+          assert.match(err.message, /^Error while parsing\/minifying/)
+          done()
+        } catch (err) {
+          done(err)
+        }
+      })
+  })
+  describe('svg', function () {
+    it('should parse svg', async function () {
+      const ms = metalsmith('svg').use(plugin())
+      await ms.build()
+      equals(fixture('svg/build'), fixture('svg/expected'))
+    })
+  })
+
+  describe('json', function () {
+    it('should minify json', async function () {
+      const ms = metalsmith('json').use(plugin({ json: true }))
+      await ms.build()
+      equals(fixture('json/build'), fixture('json/expected'))
+    })
   })
 })

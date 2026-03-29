@@ -1,10 +1,10 @@
 import { Plugin } from 'metalsmith';
 
-export default htmlmin;
+export default minify;
 export type Options = {
     key: string;
 };
 /**
  * A Metalsmith plugin to serve as a boilerplate for other core plugins
  */
-declare function htmlmin(options: Options): Plugin;
+declare function minify(options: Options): Plugin;

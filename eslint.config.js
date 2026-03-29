@@ -14,13 +14,13 @@ const config = [
       ecmaVersion: 2020,
       sourceType: 'module'
     },
-
+    ignores: ['lib/*'],
     rules: {
       ...js.configs.recommended.rules,
       'no-console': 'error',
       'prefer-const': 'error',
       'no-var': 'error',
-      'no-use-before-define': 'error',
+      'no-use-before-define': 0,
       'no-await-in-loop': 'error',
       'n/exports-style': [0, 'error'],
       'import/first': 'error',

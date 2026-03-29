@@ -17,8 +17,8 @@
   },
   "github": {
     "release": true,
-    "releaseName": "@metalsmith/htmlmin ${version}",
+    "releaseName": "@metalsmith/minify ${version}",
     "tokenRef": "GITHUB_TOKEN",
-    "assets": ["metalsmith-htmlmin-${version}.tgz"]
+    "assets": ["metalsmith-minify-${version}.tgz"]
   }
 }
